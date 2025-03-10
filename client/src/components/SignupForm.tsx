@@ -2,7 +2,10 @@ import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { createUser } from '../utils/API';
+//import { createUser } from '../utils/API';
+import { useMutation } from '@apollo/client';
+import { ADD_USER } from '../utils/mutations';
+
 import Auth from '../utils/auth';
 import type { User } from '../models/User';
 
@@ -20,30 +23,64 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
     setUserFormData({ ...userFormData, [name]: value });
   };
 
+  //REST API
+  // const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+
+  //   // check if form has everything (as per react-bootstrap docs)
+  //   const form = event.currentTarget;
+  //   if (form.checkValidity() === false) {
+  //     event.preventDefault();
+  //     event.stopPropagation();
+  //   }
+
+  //   try {
+  //     const response = await createUser(userFormData);
+
+  //     if (!response.ok) {
+  //       throw new Error('something went wrong!');
+  //     }
+
+  //     const { token } = await response.json();
+  //     Auth.login(token);
+  //   } catch (err) {
+  //     console.error(err);
+  //     setShowAlert(true);
+  //   }
+
+  //   setUserFormData({
+  //     username: '',
+  //     email: '',
+  //     password: '',
+  //     savedBooks: [],
+  //   });
+  // };
+
+  //GRAPH QL
+  const [addUserMutation] = useMutation(ADD_USER);
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+  
     // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
     }
-
+  
     try {
-      const response = await createUser(userFormData);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const { token } = await response.json();
+      // Use the addUserMutation to create a new user
+      const { data } = await addUserMutation({
+        variables: { input: userFormData },
+      });
+  
+      const { token } = data.addUser;
       Auth.login(token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
     }
-
+  
     setUserFormData({
       username: '',
       email: '',
@@ -51,7 +88,7 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
       savedBooks: [],
     });
   };
-
+  
   return (
     <>
       {/* This is needed for the validation functionality above */}
