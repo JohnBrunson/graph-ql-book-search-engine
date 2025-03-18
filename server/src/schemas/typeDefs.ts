@@ -4,7 +4,7 @@ type User {
 _id: ID
 username: String
 email: String
-bookCount: Number
+bookCount: Int
 password: String
 savedBooks: [Book]!
 
@@ -29,8 +29,8 @@ me: User
 }
 
 type Mutation {
-  createUser(username: String!, email: String!, password: String!): User
-  loginUser(username: String!, password: String!): String
+  addUser(username: String!, email: String!, password: String!): Auth
+  login(email: String!, password: String!): Auth
   saveBook(userId: ID!, book: BookInput!): User
   removeBook(userId: ID!, bookId: String!): User
 }
@@ -42,4 +42,6 @@ input BookInput {
   description: String!
   image: String
   link: String
-`
+}
+`;
+export default typeDefs;
