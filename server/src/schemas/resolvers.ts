@@ -1,10 +1,11 @@
-import { User } from '../models/User.js';
+import  User from '../models/User.js';
 import { signToken, AuthenticationError } from '../utils/auth.js'; 
 
 interface AddUserInput {
-    username: string;
-    email: string;
-    password: string;
+      username: string;
+      email: string;
+      password: string;
+      savedBooks: [];
 }
 
 interface LoginUserArgs {
@@ -38,7 +39,8 @@ interface BookInput {
       },
     },
     Mutation: {
-      addUser: async (_parent: unknown, { input }: { input: AddUserInput }) => {
+      addUser: async (_parent: any, input: AddUserInput) => {
+        console.log(input);
         const user = await User.create(input);
         const token = signToken(user.username, user.email, user._id);
         return { token, user };

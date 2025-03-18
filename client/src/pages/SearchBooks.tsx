@@ -113,7 +113,6 @@ const SearchBooks = () => {
   // };
 
   //GraphQL
-
   const handleSaveBook = async (bookId: string) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave: Book = searchedBooks.find((book) => book.bookId === bookId)!;
@@ -131,8 +130,10 @@ const SearchBooks = () => {
         variables: { book: bookToSave },
       });
   
-      // if book successfully saves to user's account, save book id to state
-      setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      if (data) {
+        // if book successfully saves to user's account, save book id to state
+        setSavedBookIds([...savedBookIds, bookToSave.bookId]);
+      }
     } catch (err) {
       console.error(err);
     }

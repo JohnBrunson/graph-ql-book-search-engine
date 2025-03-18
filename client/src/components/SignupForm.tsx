@@ -13,13 +13,18 @@ import type { User } from '../models/User';
 const SignupForm = ({}: { handleModalClose: () => void }) => {
   // set initial form state
   const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
+  // const [userFormData, setUserFormData] = useState({
+  //   username: '',
+  //   email: '',
+  //   password: ''
+  // })
   // set state for form validation
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target as HTMLInputElement;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
@@ -57,7 +62,7 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
   // };
 
   //GRAPH QL
-  const [addUserMutation] = useMutation(ADD_USER);
+  const [addUser, { error, data }] = useMutation(ADD_USER);
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   
@@ -70,14 +75,20 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
   
     try {
       // Use the addUserMutation to create a new user
-      const { data } = await addUserMutation({
-        variables: { input: userFormData },
+      console.log(userFormData);
+      const { data } = await addUser({
+        variables: { ...userFormData }, 
       });
-  
+      // const { data } = await addUser({
+      //   variables: {input: { ...userFormData } }, 
+      // })
+      console.log(data)
       const { token } = data.addUser;
+      console.log(token);
+      //Auth.login(newUser.addUser.token);
       Auth.login(token);
     } catch (err) {
-      console.error(err);
+      console.error(error);
       setShowAlert(true);
     }
   
