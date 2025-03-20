@@ -73,14 +73,17 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
     try {
       // Use the loginUserMutation to log in the user
       const { data } = await loginUserMutation({
-        variables: {
-          email: userFormData.email,
-          password: userFormData.password,
-        },
+        // variables: {
+        //   email: userFormData.email,
+        //   password: userFormData.password,
+        // },
+        variables: {...userFormData}
       });
-
-      const { token } = data.loginUser;
+      console.log(data)
+      //const { token } = data.loginUser;
+      const { token } =data.login;
       Auth.login(token);
+      console.log(data)
     } catch (err) {
       console.error(err);
       setShowAlert(true);
