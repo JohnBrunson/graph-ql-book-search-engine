@@ -46,6 +46,8 @@ interface BookInput {
         return { token, user };
       },
       login: async (_parent: unknown, { email, password }: LoginUserArgs) => {
+        console.log (email);
+        console.log (password);
         const user = await User.findOne({ email });
         if (!user) {
           throw new AuthenticationError("Can't find this user");
