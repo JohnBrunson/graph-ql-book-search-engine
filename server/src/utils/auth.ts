@@ -12,7 +12,7 @@ export const authenticateToken = ({ req }: any) => {
   if (req.headers.authorization) {
     token = token.split(' ').pop().trim();
   }
-
+  console.log('INFO: SERVER: auth.ts: Token:', token);
   // If no token is provided, return the request object as is
   if (!token) {
     return req;
@@ -21,11 +21,12 @@ export const authenticateToken = ({ req }: any) => {
   // Try to verify the token
   try {
     const { data }: any = jwt.verify(token, process.env.JWT_SECRET_KEY || '', { maxAge: '2hr' });
+    console.log('INFO: SERVER: auth.ts: Decoded User:', data);
     // If the token is valid, attach the user data to the request object
     req.user = data;
   } catch (err) {
     // If the token is invalid, log an error message
-    console.log('Invalid token');
+    console.log('INFO: SERVER: auth.ts: Invalid token');
   }
 
   // Return the request object

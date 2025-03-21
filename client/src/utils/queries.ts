@@ -36,7 +36,7 @@ query Book {
 export const QUERY_ME = gql`
 query me {
     me {
-        _id: ID
+        _id
         username
         email
         bookCount
