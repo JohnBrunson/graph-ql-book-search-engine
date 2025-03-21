@@ -28,11 +28,24 @@ interface BookInput {
 
   const resolvers = {
     Query: {
-      me: async (_parent: unknown, _args: unknown, context: any) => {
+      me: async (_parent: any, _args: any, context: any) => {
+        // console.log(context);
+        console.log('Context User:', context.user);
         if (!context.user) {
+          console.log(context.user)
           throw new AuthenticationError('You need to be logged in!');
         }
-        return User.findById(context.user._id);
+        const user = await User.findById(context.user._id).populate('savedBooks');
+        console.log('Found User:', user);
+      
+        //return user;
+        if (!user) {
+          throw new Error("User not found");
+        }
+        return {
+          ...user.toObject(),
+          bookCount: user.savedBooks.length, // Explicitly include bookCount
+        };
       },
       getUser: async (_parent: unknown, { username }: UserArgs) => {
         return User.findOne({ username });
