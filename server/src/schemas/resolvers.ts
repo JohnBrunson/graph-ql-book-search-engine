@@ -73,6 +73,8 @@ interface BookInput {
         return { token, user };
       },
       saveBook: async (_parent: unknown, { book }: { book: BookInput }, context: any) => {
+        console.log('Context User:', context.user);
+        console.log('Book to Save:', book);
         if (!context.user) {
           throw new AuthenticationError('You need to be logged in!');
         }

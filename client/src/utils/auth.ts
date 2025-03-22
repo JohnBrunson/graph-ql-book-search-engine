@@ -1,8 +1,15 @@
 // use this to decode a token and get the user's information out of it
 import { jwtDecode } from 'jwt-decode';
 
+// interface UserToken {
+//   name: string;
+//   exp: number;
+// }
+
 interface UserToken {
-  name: string;
+  _id: string;
+  username: string;
+  email: string;
   exp: number;
 }
 

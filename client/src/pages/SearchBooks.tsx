@@ -125,6 +125,7 @@ const SearchBooks = () => {
     }
   
     try {
+      // const userId = Auth.getProfile()._id; // Assuming `Auth.getProfile()` returns the user ID
       // Use the saveBookMutation to save the book
       const { data } = await saveBookMutation({
         variables: { book: bookToSave },
