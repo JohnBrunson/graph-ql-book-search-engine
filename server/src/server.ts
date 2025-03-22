@@ -28,7 +28,7 @@ import path from 'path';
 
 import { typeDefs, resolvers } from './schemas/index.js';
 import db from './config/connection.js';
-import { authenticateToken } from './utils/auth.js';
+import { jwt } from './utils/auth.js';
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -43,11 +43,30 @@ const startApolloServer = async () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   
-  app.use('/graphql', expressMiddleware(server as any,
-    {
-      context: authenticateToken as any
-    }
-  ));
+  // app.use('/graphql', expressMiddleware(server as any,
+  //   {
+  //     context: authenticateToken as any
+  //   }
+  // ));
+
+  app.use('/graphql', expressMiddleware(server as any, {
+    context: async ({ req }) => {
+      const token = req.headers.authorization?.split(' ').pop();
+      if (!token) {
+        console.log('No token provided');
+        return { user: null };
+      }
+  
+      try {
+        const { data }: any = jwt.verify(token, process.env.JWT_SECRET_KEY || '', { maxAge: '2hr' });
+        console.log('Decoded User:', data);
+        return { user: data };
+      } catch (err) {
+        console.log('Invalid token');
+        return { user: null };
+      }
+    },
+  }));
 
   // if we're in production, serve client/dist as static assets
   if (process.env.NODE_ENV === 'production') {
