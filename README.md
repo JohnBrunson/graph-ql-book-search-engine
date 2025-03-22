@@ -7,7 +7,7 @@ This application is a very simple book tracker using graphQL and allows for auth
 
 1. Clone the repository.
 2. Run ```npm i``` to install the dependencies.
-3. Run ```npm run develop`` to run both the client and server.
+3. Run ```npm run develop``` to run both the client and server.
 
 
 ## Usage
